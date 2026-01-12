@@ -3,6 +3,7 @@ package cl.pablovillarroel.timetracker.service;
 import cl.pablovillarroel.timetracker.dto.UserRequest;
 import cl.pablovillarroel.timetracker.dto.UserResponse;
 import cl.pablovillarroel.timetracker.exception.ResourceAlreadyExistsException;
+import cl.pablovillarroel.timetracker.exception.ResourceNotFoundException;
 import cl.pablovillarroel.timetracker.model.User;
 import cl.pablovillarroel.timetracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,13 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         return mapToResponse(savedUser);
+    }
+
+    public UserResponse getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found with email: " + email));
+
+        return mapToResponse(user);
     }
 
     private UserResponse mapToResponse(User user) {
