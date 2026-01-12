@@ -2,6 +2,7 @@ package cl.pablovillarroel.timetracker.service;
 
 import cl.pablovillarroel.timetracker.dto.UserRequest;
 import cl.pablovillarroel.timetracker.dto.UserResponse;
+import cl.pablovillarroel.timetracker.exception.ResourceAlreadyExistsException;
 import cl.pablovillarroel.timetracker.model.User;
 import cl.pablovillarroel.timetracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,10 @@ public class UserService {
 
     @Transactional
     public UserResponse createUser(UserRequest request) {
-        // Check if email already exists
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already registered");
+            throw new ResourceAlreadyExistsException("USER_EMAIL_ALREADY_EXISTS", "User already exists with email: " + request.getEmail());
         }
 
-        // Create user entity
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -31,10 +30,8 @@ public class UserService {
                 .enabled(true)
                 .build();
 
-        // Save user
         User savedUser = userRepository.save(user);
 
-        // Return response DTO
         return mapToResponse(savedUser);
     }
 

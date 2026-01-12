@@ -3,6 +3,7 @@ package cl.pablovillarroel.timetracker.service;
 import cl.pablovillarroel.timetracker.config.JwtUtil;
 import cl.pablovillarroel.timetracker.dto.LoginRequest;
 import cl.pablovillarroel.timetracker.dto.LoginResponse;
+import cl.pablovillarroel.timetracker.exception.BusinessException;
 import cl.pablovillarroel.timetracker.model.User;
 import cl.pablovillarroel.timetracker.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +20,14 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(() -> new BusinessException("INVALID_CREDENTIALS", "Invalid email or password"));
 
         if (!user.getEnabled()) {
-            throw new IllegalArgumentException("User account is disabled");
+            throw new BusinessException("USER_DISABLED", "User account is disabled");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
+            throw new BusinessException("INVALID_CREDENTIALS", "Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
