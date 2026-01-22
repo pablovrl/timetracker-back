@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -39,9 +38,8 @@ public class TimeEntry {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @NotNull(message = "Duration is required")
-    @Column(name = "duration", nullable = false)
-    private Duration duration;
+    @Column(name = "duration")
+    private Long duration;
 
     @DecimalMin(value = "0.0", message = "Cost must be greater than or equal to 0")
     @Column(precision = 10, scale = 2)
