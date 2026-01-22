@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/health/**", "/api/auth/**").permitAll()
+                .requestMatchers("/api/health/**", "/api/auth/**", "/swagger-ui.html", "/api-docs", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/users").permitAll()
                 .anyRequest().authenticated()
             )
